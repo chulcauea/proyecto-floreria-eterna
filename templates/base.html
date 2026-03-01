@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} Eterna Flor {% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>🌹 Eterna Flor</h1>
+        <nav>
+            <a href="{{ url_for('inicio') }}">Inicio</a> | 
+            <a href="{{ url_for('acerca_de') }}">Sobre Nosotros</a> |
+            <a href="{{ url_for('detalle_arreglo', cliente='Invitado') }}">Pedidos</a>
+        </nav>
+    </header>
+    <hr>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <hr>
+    <footer>
+        <p>&copy; 2026 Eterna Flor - Rosas que duran para siempre.</p>
+    </footer>
+</body>
+</html>

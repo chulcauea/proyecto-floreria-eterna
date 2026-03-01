@@ -1,0 +1,170 @@
+/* ESTILOS GENERALES Y BASE */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff5f7; /* Rosa muy suave */
+    color: #4a4a4a;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* Encabezado */
+header {
+    background-color: #ffb6c1; /* Rosa claro */
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Navegación */
+nav {
+    margin-top: 15px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 15px;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: #d81b60; /* Rosa fuerte */
+}
+
+/* Contenido principal */
+main {
+    padding: 2rem;
+    max-width: 1000px; /* Un poco más ancho para el catálogo */
+    margin: 20px auto;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/*  BOTONES Y ACCIONES */
+button {
+    background-color: #ff69b4; /* HotPink */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+button:hover {
+    transform: scale(1.05);
+    background-color: #e05297;
+}
+
+/* Barra de herramientas (Agregar y Buscar) */
+.herramientas-inventario {
+    display: flex;
+    justify-content: space-between; /* Botón a la izquierda, buscador a la derecha */
+    align-items: center;
+    background-color: #fce4ec;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    border: 1px solid #ffccd5;
+    gap: 15px;
+}
+
+.herramientas-inventario input {
+    padding: 10px;
+    border: 1px solid #d81b60;
+    border-radius: 8px;
+    width: 250px;
+    outline: none;
+}
+
+/* Contenedor de tarjetas */
+.contenedor-catalogo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+/* Tarjeta individual de Arreglo */
+.tarjeta-producto {
+    background: #fff;
+    border: 1px solid #ffdae0;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tarjeta-producto:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(255, 105, 180, 0.2);
+}
+
+.precio {
+    font-weight: bold;
+    color: #d81b60;
+    font-size: 1.4rem;
+    margin: 10px 0;
+}
+
+/* Botones de Administrador (Editar/Eliminar) */
+.acciones-admin {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.acciones-admin button {
+    font-size: 0.85rem;
+    padding: 8px 15px;
+    border-radius: 8px;
+}
+
+/* ESTILOS PARA FORMULARIOS (Agregar/Editar) */
+form div {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #d81b60;
+}
+
+form input[type="text"],
+form input[type="number"],
+form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ffccd5;
+    border-radius: 8px;
+    box-sizing: border-box; /* Evita que el input se salga del recuadro */
+}
+
+form input:focus, form textarea:focus {
+    border-color: #ff69b4;
+    outline: none;
+    background-color: #fff9fa;
+}
+
+/* Pie de página */
+footer {
+    text-align: center;
+    padding: 30px;
+    font-size: 0.9rem;
+    color: #888;
+}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %} Inicio - Eterna Flor {% endblock %}
+
+{% block content %}
+    <h2>Bienvenido a nuestra Florería</h2>
+    <p>Descubre la belleza de las rosas preservadas, el regalo perfecto.</p>
+    
+    <a href="{{ url_for('catalogo') }}">
+        <button>Ver Catálogo</button>
+    </a>
+{% endblock %}

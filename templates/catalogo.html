@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %} Catálogo - Eterna Flor {% endblock %}
+
+{% block content %}
+<h2 style="text-align: center; color: #d81b60;">Nuestros Arreglos Exclusivos</h2>
+
+<div class="herramientas-inventario" style="display: flex; justify-content: space-between; align-items: center; background-color: #fff0f3; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+    <a href="{{ url_for('agregar_arreglo') }}">
+        <button style="background-color: #4CAF50; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">+ Agregar Arreglo</button>
+    </a>
+    
+    <form action="{{ url_for('buscar') }}" method="GET">
+        <input type="text" name="query" placeholder="Buscar arreglo..." style="padding: 8px; border-radius: 5px; border: 1px solid #d81b60;">
+        <button type="submit" style="background-color: #d81b60; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Buscar</button>
+    </form>
+</div>
+
+<div class="contenedor-catalogo" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+    {% for producto in productos %}
+        <div class="tarjeta-producto" style="border: 1px solid #ffccd5; padding: 15px; border-radius: 15px; text-align: center; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <h3 style="color: #d81b60;">{{ producto.nombre }}</h3>
+            <p style="font-size: 0.9rem; color: #666;">{{ producto.descripcion }}</p>
+            <p class="precio" style="font-size: 1.2rem; color: #d81b60;"><strong>${{ producto.precio }}</strong></p>
+            <p style="font-size: 0.8rem; color: #888;">Stock disponible: {{ producto.cantidad }}</p>
+            
+            <div class="acciones-admin" style="display: flex; justify-content: center; gap: 10px; margin: 15px 0;">
+                <a href="{{ url_for('editar', id=producto.id) }}">
+                    <button style="background-color: #ffa500; color: white; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer;">Editar</button>
+                </a>
+                
+                <a href="{{ url_for('eliminar', id=producto.id) }}" onclick="return confirm('¿Estás seguro de eliminar este arreglo?')">
+                    <button style="background-color: #f44336; color: white; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer;">Eliminar</button>
+                </a>
+            </div>
+            
+            <hr style="border: 0; border-top: 1px solid #eee;">
+            
+            <a href="https://wa.me/593XXXXXXXXX?text=Hola,%20me%20interesa%20la%20{{ producto.nombre }}" target="_blank">
+                <button style="background-color: #25d366; color: white; border: none; padding: 10px; border-radius: 20px; width: 100%; cursor: pointer; font-weight: bold;">
+                    Pedir por WhatsApp
+                </button>
+            </a>
+        </div>
+
+    {% endfor %}
+</div>
+</div>
+
+{% if request.args.get('query') %}
+    <div style="margin-top: 20px; text-align: left;">
+        <a href="{{ url_for('catalogo') }}" style="color: #9fa5aa; text-decoration: underline; font-family: sans-serif; font-size: 1.1rem;">
+            Volver
+        </a>
+    </div>
+{% endif %}
+{% endblock %}
