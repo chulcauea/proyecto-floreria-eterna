@@ -7,23 +7,23 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <header>
-        <h1>🌹 Eterna Flor</h1>
-        <nav>
-            <a href="{{ url_for('inicio') }}">Inicio</a> | 
-            <a href="{{ url_for('acerca_de') }}">Sobre Nosotros</a> |
-            <a href="{{ url_for('detalle_arreglo', cliente='Invitado') }}">Pedidos</a>
+    <header style="background-color: #f8bbd0; padding: 15px; text-align: center;">
+        <h1 style="color: #d81b60; margin: 0;">🌹 Eterna Flor</h1>
+        <nav style="margin-top: 10px;">
+            <a href="{{ url_for('inicio') }}" style="text-decoration: none; color: #880e4f; font-weight: bold;">Inicio</a> | 
+            <a href="{{ url_for('catalogo') }}" style="text-decoration: none; color: #880e4f; font-weight: bold;">Catálogo de Arreglos</a> |
+            <a href="{{ url_for('mostrar_datos') }}" style="text-decoration: none; color: #880e4f; font-weight: bold;">Reporte Semanal (Archivos)</a>
         </nav>
     </header>
     <hr>
 
-    <main>
+    <main style="padding: 20px;">
         {% block content %}
         {% endblock %}
     </main>
 
     <hr>
-    <footer>
+    <footer style="text-align: center; color: #666; font-size: 0.9em;">
         <p>&copy; 2026 Eterna Flor - Rosas que duran para siempre.</p>
     </footer>
 </body>

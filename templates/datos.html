@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %} Reporte de Persistencia - Semana 12 {% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 20px auto; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    <h2 style="color: #d81b60; text-align: center; border-bottom: 2px solid #ffccd5; padding-bottom: 10px;">
+        Registros en Archivos Locales
+    </h2>
+
+    
+    <table style="width: 100%; border-collapse: collapse; background: white; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden;">
+        <thead>
+            <tr style="background-color: #f8bbd0; color: #880e4f; text-align: left;">
+                <th style="padding: 12px;">Nombre del Arreglo</th>
+                <th style="padding: 12px;">Stock Disponible</th>
+                <th style="padding: 12px;">Precio Unitario</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for arreglo in arreglos %}
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 12px;">{{ arreglo.nombre }}</td>
+                <td style="padding: 12px;">{{ arreglo.cantidad }} unidades</td>
+                <td style="padding: 12px;">$ {{ arreglo.precio }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3" style="padding: 20px; text-align: center; color: #999;">
+                    No hay datos registrados en el archivo JSON todavía.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="{{ url_for('catalogo') }}" style="color: #a9c1d6; text-decoration: underline; font-weight: bold;">
+            Volver al Catalogo
+        </a>
+    </div>
+</div>
+{% endblock %}

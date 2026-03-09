@@ -5,11 +5,20 @@
 {% block content %}
 <h2 style="text-align: center; color: #d81b60;">Nuestros Arreglos Exclusivos</h2>
 
-<div class="herramientas-inventario" style="display: flex; justify-content: space-between; align-items: center; background-color: #fff0f3; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-    <a href="{{ url_for('agregar_arreglo') }}">
-        <button style="background-color: #4CAF50; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">+ Agregar Arreglo</button>
-    </a>
-    
+<div style="background-color: #fff0f3; padding: 20px; border-radius: 15px; margin-bottom: 30px; border: 1px dashed #d81b60;">
+    <h3 style="color: #d81b60; margin-top: 0;">+ Registrar Nuevo Arreglo</h3>
+    <form action="{{ url_for('guardar_arreglo') }}" method="POST" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+        <input type="text" name="nombre" placeholder="Nombre de la flor" required style="padding: 8px; border-radius: 5px; border: 1px solid #ffccd5;">
+        <input type="number" name="cantidad" placeholder="Stock disponible" required style="padding: 8px; border-radius: 5px; border: 1px solid #ffccd5;">
+        <input type="number" step="0.01" name="precio" placeholder="Precio ($)" required style="padding: 8px; border-radius: 5px; border: 1px solid #ffccd5;">
+        <textarea name="descripcion" placeholder="Descripción del arreglo" style="padding: 8px; border-radius: 5px; border: 1px solid #ffccd5; grid-column: span 2;"></textarea>
+        <button type="submit" style="background-color: #f889e9; color: rgb(5, 4, 4); border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+            Guardar en Inventario
+        </button>
+    </form>
+</div>
+
+<div class="herramientas-inventario" style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px;">
     <form action="{{ url_for('buscar') }}" method="GET">
         <input type="text" name="query" placeholder="Buscar arreglo..." style="padding: 8px; border-radius: 5px; border: 1px solid #d81b60;">
         <button type="submit" style="background-color: #d81b60; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Buscar</button>
@@ -42,15 +51,13 @@
                 </button>
             </a>
         </div>
-
     {% endfor %}
-</div>
 </div>
 
 {% if request.args.get('query') %}
     <div style="margin-top: 20px; text-align: left;">
         <a href="{{ url_for('catalogo') }}" style="color: #9fa5aa; text-decoration: underline; font-family: sans-serif; font-size: 1.1rem;">
-            Volver
+            Volver al catálogo completo
         </a>
     </div>
 {% endif %}

@@ -1,0 +1,17 @@
+[
+    {
+        "nombre": "Caja de flor y chocolates",
+        "cantidad": 10,
+        "precio": 5.0
+    },
+    {
+        "nombre": "Caja de flor y chocolates",
+        "cantidad": 50,
+        "precio": 5.0
+    },
+    {
+        "nombre": "Caja Coraz\u00f3n",
+        "cantidad": 10,
+        "precio": 10.0
+    }
+]

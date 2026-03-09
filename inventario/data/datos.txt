@@ -1,0 +1,3 @@
+Nombre: Caja de flor y chocolates | Stock: 10 | Precio: $5.0
+Nombre: Caja de flor y chocolates | Stock: 50 | Precio: $5.0
+Nombre: Caja Corazón | Stock: 10 | Precio: $10.0
