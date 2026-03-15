@@ -2,42 +2,25 @@ import os
 import json
 import csv
 from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
+# Importamos la conexión desde tu carpeta Conexion
+from Conexion.conexion import obtener_conexion
 
 app = Flask(__name__)
 
-# --- CONFIGURACIÓN DE RUTAS Y PERSISTENCIA (Semana 12) ---
-# Definimos la ruta absoluta para evitar el error "unable to open database file"
+# --- CONFIGURACIÓN DE RUTAS PARA ARCHIVOS (Semana 12) ---
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'inventario', 'data')
-DB_PATH = os.path.join(DATA_DIR, 'floreria.db')
 
-# Configuración de SQLAlchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_PATH}'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+if not os.path.exists(DATA_DIR):
+    os.makedirs(DATA_DIR, exist_ok=True)
 
-# --- MODELO DE DATOS (ORM) ---
-class Arreglo(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(100), nullable=False)
-    cantidad = db.Column(db.Integer, nullable=False)
-    precio = db.Column(db.Float, nullable=False)
-    descripcion = db.Column(db.Text)
-
-# Crear carpetas y base de datos automáticamente al iniciar
-with app.app_context():
-    if not os.path.exists(DATA_DIR):
-        os.makedirs(DATA_DIR, exist_ok=True)
-    db.create_all()
-
-# --- FUNCIONES DE PERSISTENCIA EN ARCHIVOS (Semana 12) ---
+# --- FUNCIONES DE PERSISTENCIA EN ARCHIVOS ---
 def guardar_en_archivos_locales(nombre, cantidad, precio, descripcion):
-    # 1. Guardar en TXT
+    # 1. TXT
     with open(os.path.join(DATA_DIR, 'datos.txt'), 'a', encoding='utf-8') as f:
         f.write(f"Nombre: {nombre} | Stock: {cantidad} | Precio: ${precio}\n")
 
-    # 2. Guardar en JSON (Librería json)
+    # 2. JSON
     archivo_json = os.path.join(DATA_DIR, 'datos.json')
     datos_json = []
     if os.path.exists(archivo_json) and os.path.getsize(archivo_json) > 0:
@@ -46,12 +29,11 @@ def guardar_en_archivos_locales(nombre, cantidad, precio, descripcion):
                 datos_json = json.load(f)
         except json.JSONDecodeError:
             datos_json = []
-    
     datos_json.append({"nombre": nombre, "cantidad": cantidad, "precio": precio})
     with open(archivo_json, 'w', encoding='utf-8') as f:
         json.dump(datos_json, f, indent=4)
 
-    # 3. Guardar en CSV (Librería csv)
+    # 3. CSV
     with open(os.path.join(DATA_DIR, 'datos.csv'), 'a', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow([nombre, cantidad, precio, descripcion])
@@ -64,11 +46,21 @@ def inicio():
 
 @app.route('/catalogo')
 def catalogo():
-    # Consulta usando el ORM
-    productos = Arreglo.query.all()
-    return render_template('catalogo.html', productos=productos)
+    con = obtener_conexion()
+    productos = []
+    usuarios = []
+    if con:
+        cursor = con.cursor(dictionary=True)
+        # Consultar Arreglos
+        cursor.execute("SELECT * FROM arreglos")
+        productos = cursor.fetchall()
+        # Consultar Usuarios (Requisito Semana 13)
+        cursor.execute("SELECT * FROM usuarios")
+        usuarios = cursor.fetchall()
+        con.close()
+    return render_template('catalogo.html', productos=productos, usuarios=usuarios)
 
-@app.route('/datos') # RUTA DE VISUALIZACIÓN DE ARCHIVOS
+@app.route('/datos')
 def mostrar_datos():
     archivo_json = os.path.join(DATA_DIR, 'datos.json')
     registros = []
@@ -77,7 +69,7 @@ def mostrar_datos():
             registros = json.load(f)
     return render_template('datos.html', arreglos=registros)
 
-# --- RUTAS CRUD ACTUALIZADAS ---
+# --- RUTAS CRUD ARREGLOS (MySQL) ---
 
 @app.route('/guardar_arreglo', methods=['POST'])
 def guardar_arreglo():
@@ -86,47 +78,96 @@ def guardar_arreglo():
     precio = float(request.form['precio'])
     descripcion = request.form['descripcion']
     
-    # Persistencia en Base de Datos
-    nuevo_arreglo = Arreglo(nombre=nombre, cantidad=cantidad, precio=precio, descripcion=descripcion)
-    db.session.add(nuevo_arreglo)
-    db.session.commit()
+    con = obtener_conexion()
+    if con:
+        cursor = con.cursor()
+        sql = "INSERT INTO arreglos (nombre, cantidad, precio, descripcion) VALUES (%s, %s, %s, %s)"
+        cursor.execute(sql, (nombre, cantidad, precio, descripcion))
+        con.commit()
+        con.close()
     
-    # Persistencia en Archivos Locales
     guardar_en_archivos_locales(nombre, cantidad, precio, descripcion)
-    
     return redirect(url_for('catalogo'))
 
 @app.route('/editar/<int:id>')
 def editar(id):
-    producto = Arreglo.query.get_or_404(id)
+    con = obtener_conexion()
+    producto = None
+    if con:
+        cursor = con.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM arreglos WHERE id = %s", (id,))
+        producto = cursor.fetchone()
+        con.close()
     return render_template('editar.html', producto=producto)
 
 @app.route('/actualizar_arreglo', methods=['POST'])
 def actualizar_arreglo():
     id_arreglo = request.form['id']
-    arreglo = Arreglo.query.get(id_arreglo)
+    nombre = request.form['nombre']
+    cantidad = int(request.form['cantidad'])
+    precio = float(request.form['precio'])
+    descripcion = request.form['descripcion']
     
-    arreglo.nombre = request.form['nombre']
-    arreglo.cantidad = int(request.form['cantidad'])
-    arreglo.precio = float(request.form['precio'])
-    arreglo.descripcion = request.form['descripcion']
-    
-    db.session.commit()
+    con = obtener_conexion()
+    if con:
+        cursor = con.cursor()
+        sql = "UPDATE arreglos SET nombre=%s, cantidad=%s, precio=%s, descripcion=%s WHERE id=%s"
+        cursor.execute(sql, (nombre, cantidad, precio, descripcion, id_arreglo))
+        con.commit()
+        con.close()
     return redirect(url_for('catalogo'))
 
 @app.route('/eliminar/<int:id>')
 def eliminar(id):
-    arreglo = Arreglo.query.get_or_404(id)
-    db.session.delete(arreglo)
-    db.session.commit()
+    con = obtener_conexion()
+    if con:
+        cursor = con.cursor()
+        cursor.execute("DELETE FROM arreglos WHERE id = %s", (id,))
+        con.commit()
+        con.close()
     return redirect(url_for('catalogo'))
 
 @app.route('/buscar')
 def buscar():
     query = request.args.get('query')
-    # Búsqueda filtrada con SQLAlchemy
-    productos = Arreglo.query.filter(Arreglo.nombre.like(f'%{query}%')).all()
-    return render_template('catalogo.html', productos=productos)
+    con = obtener_conexion()
+    productos = []
+    usuarios = []
+    if con:
+        cursor = con.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM arreglos WHERE nombre LIKE %s", (f'%{query}%',))
+        productos = cursor.fetchall()
+        cursor.execute("SELECT * FROM usuarios")
+        usuarios = cursor.fetchall()
+        con.close()
+    return render_template('catalogo.html', productos=productos, usuarios=usuarios)
+
+# --- CRUD USUARIOS (Nuevas rutas para la Semana 13) ---
+
+@app.route('/guardar_usuario', methods=['POST'])
+def guardar_usuario():
+    nombre = request.form['nombre']
+    mail = request.form['mail']
+    password = request.form['password']
+    
+    con = obtener_conexion()
+    if con:
+        cursor = con.cursor()
+        sql = "INSERT INTO usuarios (nombre, mail, password) VALUES (%s, %s, %s)"
+        cursor.execute(sql, (nombre, mail, password))
+        con.commit()
+        con.close()
+    return redirect(url_for('catalogo'))
+
+@app.route('/eliminar_usuario/<int:id>')
+def eliminar_usuario(id):
+    con = obtener_conexion()
+    if con:
+        cursor = con.cursor()
+        cursor.execute("DELETE FROM usuarios WHERE id_usuario = %s", (id,))
+        con.commit()
+        con.close()
+    return redirect(url_for('catalogo'))
 
 if __name__ == '__main__':
     app.run(debug=True)

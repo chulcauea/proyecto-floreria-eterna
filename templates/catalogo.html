@@ -57,8 +57,56 @@
 {% if request.args.get('query') %}
     <div style="margin-top: 20px; text-align: left;">
         <a href="{{ url_for('catalogo') }}" style="color: #9fa5aa; text-decoration: underline; font-family: sans-serif; font-size: 1.1rem;">
-            Volver al catálogo completo
+            Volver.
         </a>
     </div>
 {% endif %}
+
+<hr style="margin: 50px 0; border: 1px solid #ffccd5;">
+
+<h2 style="text-align: center; color: #d81b60;">👥 Usuarios del Sistema</h2>
+
+<div style="max-width: 800px; margin: 0 auto 20px auto; background: #deb1e9; padding: 20px; border-radius: 15px; border: 1px solid #c6f6d5;">
+    <h4 style="color: #020202; margin-top: 0;">+ Registro de Personal</h4>
+    <form action="{{ url_for('guardar_usuario') }}" method="POST" style="display: flex; gap: 10px;">
+        <input type="text" name="nombre" placeholder="Nombre" required style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e0;">
+        <input type="email" name="mail" placeholder="Correo" required style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e0;">
+        <input type="password" name="password" placeholder="Pass" required style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e0;">
+        <button type="submit" style="background-color: #eacaee; color: rgb(0, 0, 0); border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">Registrar</button>
+    </form>
+</div>
+
+<div style="max-width: 800px; margin: 20px auto; background: white; padding: 20px; border-radius: 15px; border: 1px solid #ffccd5; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+            <tr style="background-color: #eea9e8; color: rgb(0, 0, 0);">
+                <th style="padding: 12px; border-radius: 10px 0 0 0;">ID</th>
+                <th style="padding: 12px;">Nombre</th>
+                <th style="padding: 12px;">Correo</th>
+                <th style="padding: 12px; border-radius: 0 10px 0 0; text-align: center;">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 12px;">{{ usuario.id_usuario }}</td>
+                <td style="padding: 12px; font-weight: bold;">{{ usuario.nombre }}</td>
+                <td style="padding: 12px; color: #666;">{{ usuario.mail }}</td>
+                <td style="padding: 12px; text-align: center;">
+                    <a href="{{ url_for('eliminar_usuario', id=usuario.id_usuario) }}" 
+                       onclick="return confirm('¿Quitar acceso?')"
+                       style="color: #f44336; text-decoration: none; font-weight: bold;">
+                       [ Quitar ]
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" style="padding: 20px; text-align: center; color: #999;">No hay usuarios registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 {% endblock %}

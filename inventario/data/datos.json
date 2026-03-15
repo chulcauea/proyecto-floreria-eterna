@@ -13,5 +13,20 @@
         "nombre": "Caja Coraz\u00f3n",
         "cantidad": 10,
         "precio": 10.0
+    },
+    {
+        "nombre": "Caja Coraz\u00f3n",
+        "cantidad": 10,
+        "precio": 15.0
+    },
+    {
+        "nombre": "Ramo de 7 Rosas Eterna ",
+        "cantidad": 25,
+        "precio": 10.0
+    },
+    {
+        "nombre": "Cupula Encantada ",
+        "cantidad": 50,
+        "precio": 25.0
     }
 ]
