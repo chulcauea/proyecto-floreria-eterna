@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %} Login - Eterna Flor {% endblock %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 50px auto; background: white; padding: 30px; border-radius: 15px; border: 1px solid #ffccd5; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center;">
+    <h2 style="color: #d81b60;">Iniciar Sesión</h2>
+    <p style="color: #888;">Acceso al Sistema de Inventario</p>
+    
+    <form action="{{ url_for('login') }}" method="POST">
+        <input type="email" name="email" placeholder="Correo Electrónico" required style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ffccd5;">
+        <input type="password" name="password" placeholder="Contraseña" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #ffccd5;">
+        <button type="submit" style="width: 100%; background-color: #d81b60; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+            Ingresar
+        </button>
+    </form>
+</div>
+{% endblock %}

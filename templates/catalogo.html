@@ -3,6 +3,16 @@
 {% block title %} Catálogo - Eterna Flor {% endblock %}
 
 {% block content %}
+
+<div style="display: flex; justify-content: space-between; align-items: center; background: #fdf2f8; padding: 10px 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #fbcfe8;">
+    <p style="margin: 0; color: #be185d; font-weight: bold;">
+        🌸 Sesión iniciada como: {{ current_user.nombre }}
+    </p>
+    <a href="{{ url_for('logout') }}" style="background: #be185d; color: white; text-decoration: none; padding: 5px 15px; border-radius: 8px; font-size: 0.9rem; font-weight: bold;">
+        Cerrar Sesión
+    </a>
+</div>
+
 <h2 style="text-align: center; color: #d81b60;">Nuestros Arreglos Exclusivos</h2>
 
 <div style="background-color: #fff0f3; padding: 20px; border-radius: 15px; margin-bottom: 30px; border: 1px dashed #d81b60;">
@@ -57,7 +67,7 @@
 {% if request.args.get('query') %}
     <div style="margin-top: 20px; text-align: left;">
         <a href="{{ url_for('catalogo') }}" style="color: #9fa5aa; text-decoration: underline; font-family: sans-serif; font-size: 1.1rem;">
-            Volver.
+            Volver al listado completo.
         </a>
     </div>
 {% endif %}
