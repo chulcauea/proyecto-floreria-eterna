@@ -15,8 +15,9 @@ app.secret_key = 'clave_secreta_eterna_flor_2026'
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-login_manager.login_message = None 
+login_manager.login_message = "Por favor, inicia sesión para acceder."
 
+# Clase Usuario para Flask-Login
 class Usuario(UserMixin):
     def __init__(self, id, nombre, email):
         self.id = id
@@ -28,6 +29,7 @@ def load_user(user_id):
     con = obtener_conexion()
     if con:
         cursor = con.cursor(dictionary=True)
+        # Asegúrate que el nombre de la columna sea id_usuario
         cursor.execute("SELECT * FROM usuarios WHERE id_usuario = %s", (user_id,))
         user_data = cursor.fetchone()
         con.close()
@@ -76,28 +78,36 @@ def inicio():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        email = request.form['email'].strip() # Quitamos espacios extra
+        password = request.form['password'].strip()
+        
         con = obtener_conexion()
         if con:
             cursor = con.cursor(dictionary=True)
+            # Verificamos mail y password
             cursor.execute("SELECT * FROM usuarios WHERE mail = %s AND password = %s", (email, password))
             user_data = cursor.fetchone()
             con.close()
+            
             if user_data:
                 user_obj = Usuario(user_data['id_usuario'], user_data['nombre'], user_data['mail'])
                 login_user(user_obj)
                 return redirect(url_for('catalogo'))
-        flash('Correo o contraseña incorrectos.')
+            else:
+                flash('❌ Correo o contraseña incorrectos.')
+        else:
+            flash('❌ Error: No se pudo conectar a la base de datos.')
+            
     return render_template('login.html')
 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
+    flash('Has cerrado sesión.')
     return redirect(url_for('login'))
 
-# --- CRUD PRODUCTOS (CATALOGO CON BUSCADOR) ---
+# --- CRUD PRODUCTOS (CATALOGO) ---
 
 @app.route('/catalogo')
 @login_required
@@ -108,11 +118,15 @@ def catalogo():
     else:
         productos = ProductoService.listar_todos()
         
+    # Obtener lista de usuarios para la gestión en el modal
     con = obtener_conexion()
-    cursor = con.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM usuarios")
-    usuarios = cursor.fetchall()
-    con.close()
+    usuarios = []
+    if con:
+        cursor = con.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM usuarios")
+        usuarios = cursor.fetchall()
+        con.close()
+        
     return render_template('catalogo.html', productos=productos, usuarios=usuarios)
 
 @app.route('/buscar', methods=['GET'])
@@ -135,14 +149,13 @@ def guardar_arreglo():
         flash(f'❌ Error al guardar: {e}')
     return redirect(url_for('catalogo'))
 
-# --- RUTAS DE EDICIÓN (CORREGIDAS) ---
+# --- EDICIÓN ---
 
 @app.route('/editar/<int:id>')
 @login_required
 def editar(id):
-    # Usamos el servicio corregido que consulta a la tabla 'arreglos'
+    # Obtener el producto desde el servicio corregido (tabla arreglos)
     producto = ProductoService.obtener_por_id(id)
-    
     if producto:
         return render_template('editar.html', producto=producto)
     else:
@@ -159,16 +172,14 @@ def actualizar_arreglo():
         cantidad = int(request.form['cantidad'])
         descripcion = request.form['descripcion']
         
-        # Usamos el servicio corregido que hace el UPDATE en la tabla 'arreglos'
         exito = ProductoService.actualizar(id_prod, nombre, precio, cantidad, descripcion)
         
         if exito:
             flash('🌸 Arreglo actualizado correctamente.')
         else:
-            flash('❌ No se pudo actualizar el arreglo.')
-            
+            flash('❌ No se pudo actualizar en la base de datos.')
     except Exception as e:
-        flash(f'❌ Error al actualizar: {e}')
+        flash(f'❌ Error técnico: {e}')
     
     return redirect(url_for('catalogo'))
 
@@ -176,7 +187,7 @@ def actualizar_arreglo():
 @login_required
 def eliminar(id):
     ProductoService.eliminar(id)
-    flash('Producto eliminado correctamente.')
+    flash('🗑️ Producto eliminado.')
     return redirect(url_for('catalogo'))
 
 # --- GESTIÓN DE CLIENTES ---
@@ -198,7 +209,7 @@ def guardar_cliente():
     flash('👤 Cliente registrado con éxito.')
     return redirect(url_for('gestion_clientes'))
 
-# --- GESTIÓN DE USUARIOS (PERSONAL) ---
+# --- GESTIÓN DE USUARIOS ---
 
 @app.route('/guardar_usuario', methods=['POST'])
 @login_required
@@ -210,7 +221,7 @@ def guardar_usuario():
                        (request.form['nombre'], request.form['mail'], request.form['password']))
         con.commit()
         con.close()
-        flash('✅ Usuario del sistema registrado.')
+        flash('✅ Nuevo usuario registrado.')
     return redirect(url_for('catalogo'))
 
 @app.route('/eliminar_usuario/<int:id>')
@@ -222,7 +233,7 @@ def eliminar_usuario(id):
         cursor.execute("DELETE FROM usuarios WHERE id_usuario = %s", (id,))
         con.commit()
         con.close()
-        flash('🗑️ Acceso de usuario revocado.')
+        flash('🗑️ Acceso revocado.')
     return redirect(url_for('catalogo'))
 
 if __name__ == '__main__':
