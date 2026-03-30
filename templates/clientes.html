@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 style="text-align: center; color: #d81b60;">👥 Gestión de Clientes</h2>
+
+<div style="background-color: #fdf2f8; padding: 20px; border-radius: 15px; margin-bottom: 30px; border: 1px solid #fbcfe8;">
+    <h3 style="color: #be185d;">+ Nuevo Cliente</h3>
+    <form action="{{ url_for('guardar_cliente') }}" method="POST" style="display: flex; gap: 10px;">
+        <input type="text" name="nombre" placeholder="Nombre completo" required style="flex: 2; padding: 10px; border-radius: 8px; border: 1px solid #ffccd5;">
+        <input type="text" name="telefono" placeholder="Teléfono" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ffccd5;">
+        <input type="text" name="direccion" placeholder="Dirección" style="flex: 2; padding: 10px; border-radius: 8px; border: 1px solid #ffccd5;">
+        <button type="submit" style="background: #be185d; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold;">Registrar</button>
+    </form>
+</div>
+
+<table style="width: 100%; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <tr style="background: #be185d; color: white;">
+        <th style="padding: 15px;">ID</th>
+        <th>Nombre</th>
+        <th>Teléfono</th>
+        <th>Dirección</th>
+    </tr>
+    {% for c in clientes %}
+    <tr style="border-bottom: 1px solid #eee; text-align: center;">
+        <td style="padding: 10px;">{{ c.id_cliente }}</td>
+        <td>{{ c.nombre_cliente }}</td>
+        <td>{{ c.telefono }}</td>
+        <td>{{ c.direccion }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

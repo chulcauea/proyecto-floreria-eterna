@@ -5,31 +5,31 @@
 {% block content %}
 <div style="padding: 20px;">
     <h2 style="text-align: center; color: #d81b60; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-        Modificar Arreglo: {{ producto.nombre }}
+        🌸 Modificar Arreglo: {{ producto['nombre'] }}
     </h2>
     
     <div style="max-width: 500px; margin: auto; background: #fff5f7; padding: 30px; border-radius: 15px; box-shadow: 0 8px 20px rgba(216, 27, 96, 0.1); border: 1px solid #ffccd5;">
         
         <form action="{{ url_for('actualizar_arreglo') }}" method="POST">
             
-            <input type="hidden" name="id" value="{{ producto.id }}">
+            <input type="hidden" name="id" value="{{ producto['id'] }}">
 
             <div style="margin-bottom: 20px;">
                 <label style="color: #d81b60; font-weight: bold; display: block; margin-bottom: 8px;">Nombre del Arreglo:</label>
-                <input type="text" name="nombre" value="{{ producto.nombre }}" required 
+                <input type="text" name="nombre" value="{{ producto['nombre'] }}" required 
                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ffccd5; outline: none; box-sizing: border-box;">
             </div>
             
             <div style="display: flex; gap: 15px; margin-bottom: 20px;">
                 <div style="flex: 1;">
                     <label style="color: #d81b60; font-weight: bold; display: block; margin-bottom: 8px;">Stock:</label>
-                    <input type="number" name="cantidad" value="{{ producto.cantidad }}" required 
+                    <input type="number" name="cantidad" value="{{ producto['cantidad'] }}" required 
                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ffccd5; box-sizing: border-box;">
                 </div>
                 
                 <div style="flex: 1;">
                     <label style="color: #d81b60; font-weight: bold; display: block; margin-bottom: 8px;">Precio ($):</label>
-                    <input type="number" step="0.01" name="precio" value="{{ producto.precio }}" required 
+                    <input type="number" step="0.01" name="precio" value="{{ producto['precio'] }}" required 
                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ffccd5; box-sizing: border-box;">
                 </div>
             </div>
@@ -37,11 +37,13 @@
             <div style="margin-bottom: 25px;">
                 <label style="color: #d81b60; font-weight: bold; display: block; margin-bottom: 8px;">Descripción:</label>
                 <textarea name="descripcion" rows="4" 
-                          style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ffccd5; resize: none; box-sizing: border-box;">{{ producto.descripcion }}</textarea>
+                          style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ffccd5; resize: none; box-sizing: border-box;">{{ producto['descripcion'] }}</textarea>
             </div>
             
-            <button type="submit" style="width: 100%; background-color: #ffa500; color: white; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: background 0.3s;">
-                💾 Guardar Cambios en MySQL
+            <button type="submit" style="width: 100%; background-color: #f7bcef; color: rgb(0, 0, 0); padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: background 0.3s;"
+                    onmouseover="this.style.backgroundColor='#e69500'" 
+                    onmouseout="this.style.backgroundColor='#ffa500'">
+                💾 Guardar Cambios 
             </button>
         </form>
         

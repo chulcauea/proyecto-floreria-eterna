@@ -12,12 +12,22 @@
         <nav style="margin-top: 10px;">
             <a href="{{ url_for('inicio') }}" style="text-decoration: none; color: #880e4f; font-weight: bold;">Inicio</a> | 
             <a href="{{ url_for('catalogo') }}" style="text-decoration: none; color: #880e4f; font-weight: bold;">Catálogo de Arreglos</a> |
-            <a href="{{ url_for('mostrar_datos') }}" style="text-decoration: none; color: #880e4f; font-weight: bold;">Reporte Semanal (Archivos)</a>
+            <a href="{{ url_for('gestion_clientes') }}" style="text-decoration: none; color: #880e4f; font-weight: bold;">Gestión de Clientes</a>
         </nav>
     </header>
     <hr>
 
     <main style="padding: 20px;">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div style="background-color: #fce4ec; color: #d81b60; padding: 10px; border-radius: 5px; margin-bottom: 20px; text-align: center; border: 1px solid #f8bbd0;">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
         {% block content %}
         {% endblock %}
     </main>

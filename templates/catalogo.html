@@ -15,6 +15,25 @@
 
 <h2 style="text-align: center; color: #d81b60;">Nuestros Arreglos Exclusivos</h2>
 
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div class="reportes">
+        <a href="{{ url_for('reporte_pdf') }}" style="background-color: #d81b60; color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px;">
+            📄 Descargar Inventario (PDF)
+        </a>
+        <a href="{{ url_for('gestion_clientes') }}" style="margin-left:10px; background-color: #be185d; color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: bold;">
+            👥 Clientes
+        </a>
+    </div>
+    
+    <form action="{{ url_for('buscar') }}" method="GET" style="display: flex; gap: 5px;">
+        <input type="text" name="query" placeholder="Buscar arreglo..." value="{{ request.args.get('query', '') }}" style="padding: 8px; border-radius: 5px; border: 1px solid #d81b60;">
+        <button type="submit" style="background-color: #d81b60; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Buscar</button>
+        {% if request.args.get('query') %}
+            <a href="{{ url_for('catalogo') }}" style="text-decoration: none; color: #666; font-size: 0.8rem; align-self: center; margin-left: 5px;">Limpiar</a>
+        {% endif %}
+    </form>
+</div>
+
 <div style="background-color: #fff0f3; padding: 20px; border-radius: 15px; margin-bottom: 30px; border: 1px dashed #d81b60;">
     <h3 style="color: #d81b60; margin-top: 0;">+ Registrar Nuevo Arreglo</h3>
     <form action="{{ url_for('guardar_arreglo') }}" method="POST" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
@@ -28,49 +47,39 @@
     </form>
 </div>
 
-<div class="herramientas-inventario" style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px;">
-    <form action="{{ url_for('buscar') }}" method="GET">
-        <input type="text" name="query" placeholder="Buscar arreglo..." style="padding: 8px; border-radius: 5px; border: 1px solid #d81b60;">
-        <button type="submit" style="background-color: #d81b60; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Buscar</button>
-    </form>
-</div>
-
 <div class="contenedor-catalogo" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
     {% for producto in productos %}
         <div class="tarjeta-producto" style="border: 1px solid #ffccd5; padding: 15px; border-radius: 15px; text-align: center; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-            <h3 style="color: #d81b60;">{{ producto.nombre }}</h3>
-            <p style="font-size: 0.9rem; color: #666;">{{ producto.descripcion }}</p>
-            <p class="precio" style="font-size: 1.2rem; color: #d81b60;"><strong>${{ producto.precio }}</strong></p>
-            <p style="font-size: 0.8rem; color: #888;">Stock disponible: {{ producto.cantidad }}</p>
+            <h3 style="color: #d81b60;">{{ producto['nombre'] }}</h3>
+            <p style="font-size: 0.9rem; color: #666;">{{ producto['descripcion'] }}</p>
+            <p class="precio" style="font-size: 1.2rem; color: #d81b60;"><strong>${{ producto['precio'] }}</strong></p>
+            <p style="font-size: 0.8rem; color: #888;">Stock disponible: {{ producto['cantidad'] }}</p>
             
             <div class="acciones-admin" style="display: flex; justify-content: center; gap: 10px; margin: 15px 0;">
-                <a href="{{ url_for('editar', id=producto.id) }}">
-                    <button style="background-color: #ffa500; color: white; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer;">Editar</button>
+                <a href="{{ url_for('editar', id=producto['id']) }}">
+                    <button style="background-color: #e9ca42; color: rgb(0, 0, 0); border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer;">Editar</button>
                 </a>
                 
-                <a href="{{ url_for('eliminar', id=producto.id) }}" onclick="return confirm('¿Estás seguro de eliminar este arreglo?')">
+                <a href="{{ url_for('eliminar', id=producto['id']) }}" onclick="return confirm('¿Estás seguro de eliminar este arreglo?')">
                     <button style="background-color: #f44336; color: white; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer;">Eliminar</button>
                 </a>
             </div>
             
             <hr style="border: 0; border-top: 1px solid #eee;">
             
-            <a href="https://wa.me/593XXXXXXXXX?text=Hola,%20me%20interesa%20la%20{{ producto.nombre }}" target="_blank">
+            <a href="https://wa.me/593XXXXXXXXX?text=Hola,%20me%20interesa%20la%20{{ producto['nombre'] }}" target="_blank">
                 <button style="background-color: #25d366; color: white; border: none; padding: 10px; border-radius: 20px; width: 100%; cursor: pointer; font-weight: bold;">
                     Pedir por WhatsApp
                 </button>
             </a>
         </div>
+    {% else %}
+        <div style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+            <p style="color: #888;">No se encontraron arreglos que coincidan con tu búsqueda.</p>
+            <a href="{{ url_for('catalogo') }}" style="color: #d81b60;">Ver todo el catálogo</a>
+        </div>
     {% endfor %}
 </div>
-
-{% if request.args.get('query') %}
-    <div style="margin-top: 20px; text-align: left;">
-        <a href="{{ url_for('catalogo') }}" style="color: #9fa5aa; text-decoration: underline; font-family: sans-serif; font-size: 1.1rem;">
-            Volver al listado completo.
-        </a>
-    </div>
-{% endif %}
 
 <hr style="margin: 50px 0; border: 1px solid #ffccd5;">
 
@@ -99,20 +108,16 @@
         <tbody>
             {% for usuario in usuarios %}
             <tr style="border-bottom: 1px solid #eee;">
-                <td style="padding: 12px;">{{ usuario.id_usuario }}</td>
-                <td style="padding: 12px; font-weight: bold;">{{ usuario.nombre }}</td>
-                <td style="padding: 12px; color: #666;">{{ usuario.mail }}</td>
+                <td style="padding: 12px;">{{ usuario['id_usuario'] }}</td>
+                <td style="padding: 12px; font-weight: bold;">{{ usuario['nombre'] }}</td>
+                <td style="padding: 12px; color: #666;">{{ usuario['mail'] }}</td>
                 <td style="padding: 12px; text-align: center;">
-                    <a href="{{ url_for('eliminar_usuario', id=usuario.id_usuario) }}" 
-                       onclick="return confirm('¿Quitar acceso?')"
+                    <a href="{{ url_for('eliminar_usuario', id=usuario['id_usuario']) }}" 
+                       onclick="return confirm('¿Quitar acceso a {{ usuario['nombre'] }}?')"
                        style="color: #f44336; text-decoration: none; font-weight: bold;">
                        [ Quitar ]
                     </a>
                 </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="4" style="padding: 20px; text-align: center; color: #999;">No hay usuarios registrados.</td>
             </tr>
             {% endfor %}
         </tbody>

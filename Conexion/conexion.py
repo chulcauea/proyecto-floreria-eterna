@@ -3,12 +3,13 @@ import mysql.connector
 def obtener_conexion():
     try:
         conexion = mysql.connector.connect(
-            host="localhost",
-            user="root",        # Tu usuario de MySQL
-            password="",        # Tu contraseña (deja vacío si no tienes)
-            database="floreria_db" # Nombre de tu base de datos
+            host='localhost',
+            user='root',
+            password='', # Por defecto en XAMPP está vacío
+            database='floreria_db',
+            port='3306' # <-- Verifica que diga 3306
         )
         return conexion
-    except mysql.connector.Error as err:
-        print(f"Error al conectar: {err}")
+    except Exception as e:
+        print(f"Error al conectar: {e}")
         return None
